@@ -50,6 +50,8 @@ class KMGSite extends TimberSite {
 	function add_to_context( $context ) {
 		$context['menu'] = new TimberMenu();
 		$context['site'] = $this;
+		$context['options'] = get_fields('options');
+		$context['sources_cats'] = kmg_get_additional_sources();
 		$context['initial_js'] = file_get_contents(get_template_directory() . '/dist/assets/js/initial.js');
 
 		return $context;
@@ -111,16 +113,6 @@ function kmg_get_menu_icon($item) {
 // remove_filter( 'template_redirect', 'redirect_canonical' );
 add_action( 'init', 'kmg_add_custom_rewrite_rules' );
 function kmg_add_custom_rewrite_rules() {
-    // add_rewrite_rule(
-	// 	'sources/(.+?)$',
-	// 	'index.php?post_type=source&category_name=$matches[1]', 'top'
-	// );
-
-	// add_rewrite_rule(
-	// 	'sources/(.+?)/page/?([0-9]{1,})/?$',
-	// 	'index.php?category_name=$matches[1]&paged=$matches[2]&post_type=source', 'top'
-	// );`
-
 	add_rewrite_rule(
 		'^articles/page/(([0-9]+)?)?/?$',
 		'index.php?post_type=post&page=$matches[2]', 'top'
@@ -154,14 +146,21 @@ function kmg_excerpt_label( $translation, $original ) {
 }
 
 
+/**
+ * Return array of categories excluding a few whose IDs are retrieved by name.
+ */
+function kmg_get_additional_sources() {
+	$excluded_cats = array(
+		get_cat_ID( 'By Karen' ),
+		get_cat_ID( 'About Karen' ),
+		get_cat_ID( 'Uncategorized' )
+	);
 
+	$categories = get_terms( 'category',
+		array(
+			'exclude' => $excluded_cats
+		)
+	);
 
-// function custom_pre_get_posts($query)
-// {
-//     if (is_category()) {
-//         $query->set('page_val', get_query_var('paged'));
-//         $query->set('paged', 0);
-//     }
-// }
-
-// add_action('pre_get_posts', 'custom_pre_get_posts');
+	return $categories;
+}

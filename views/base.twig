@@ -8,26 +8,16 @@
 
 	<body id="www-karenmcgrane-com" class="{{body_class}}"  data-template="base.twig">
 
-		<header class="header" >
-			{% include "partials/site-header.twig" %}
-		</header>
+		{% include "partials/site-header.twig" %}
 
 		<main class="site-content">
 			{% block content %}
 				Sorry, no content
 			{% endblock %}
 		</main>
-
-		<footer class="region site-footer">
-			{% include 'footer.twig' %}
-		</footer>
-
-		{# TODO: learn about this:
-		<!-- States referenced by `aria-describedby` -->
-		<div id="wayfinding" class="squelch">
-				<span id="current-page">Current page</span>
-		</div>  #}
-
+		
+		{% include 'footer.twig' %}
+		
 		{{ fn('wp_footer') }}
 
 	</body>
